@@ -1,4 +1,4 @@
-const userModel = require('../models/userModel');  // Asegúrate de la ruta correcta
+const userModel = require('../models/userModel');  
 const jwtUtils = require('../utils/jwtUtils');
 const validators = require('../utils/validators');
 
