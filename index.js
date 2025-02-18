@@ -40,47 +40,42 @@ app.get('/', async (req, res) => {
 });
 
 
-
-// Ruta de registro de usuario
-// Ruta de registro de usuario
 app.post('/register', async (req, res) => {
     try {
         const { email, username, password, role } = req.body;
 
-        // Validación básica de datos
+        
         if (!email || !username || !password || !role) {
             return res.status(400).json({ error: "Faltan datos: email, username, password y role son requeridos." });
         }
 
-        // Validación de formato de correo electrónico
+    
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ error: "El correo electrónico no tiene un formato válido." });
         }
 
-        // Verifica si el correo ya existe
+    
         const userExists = await db.collection('users').where('email', '==', email).get();
         if (!userExists.empty) {
             return res.status(400).json({ error: "El correo electrónico ya está registrado." });
         }
 
-        // Encriptar la contraseña
-        const hashedPassword = await bcrypt.hash(password, 10);  // Salto de 10 para bcrypt
+      
+        const hashedPassword = await bcrypt.hash(password, 10); 
 
-        // Obtener la fecha de registro (timestamp)
+     
         const dateRegister = new Date();
 
-        // Crear el nuevo usuario en Firestore
         const newUserRef = await db.collection('users').add({
             email,
             username,
             password: hashedPassword,
             role,
             'date-register': dateRegister,
-            'last-login': dateRegister,  // Asignar el timestamp como fecha de último login
+            'last-login': dateRegister,  
         });
 
-        // Retorna el ID del nuevo usuario y sus datos (sin la contraseña)
         res.status(201).json({
             id: newUserRef.id,
             email,
